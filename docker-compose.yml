@@ -1,13 +1,22 @@
-version: '3'
+version: "3"
 
 services:
+  frontend:
+    build: ./frontend
+    container_name: learn-docker-frontend
+    command: serve build -l 3000
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+
   api:
     build: ./api
     container_name: learn-docker-api
     command: npm run start
     restart: unless-stopped
     ports:
-      - '4001:4001'
+      - "3001:3001"
     environment:
       - PORT=4001
       - HOST=http://customhost.com
@@ -21,7 +30,7 @@ services:
     command: npm run start
     restart: unless-stopped
     ports:
-      - '3002:3002'
+      - "3002:3002"
     environment:
       - PORT=3002
       - MONGO_URL=mongodb://auth_db:27017/auth
