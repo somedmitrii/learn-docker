@@ -5,4 +5,13 @@ services:
     build: ./api
     command: npm run start
     ports:
-      - '4000:4000'
+      - '4001:4001'
+    environment:
+      - PORT=4001
+      - HOST=http://customhost.com
+      - MONGO_URL=mongodb://api_db:27017/api
+    depends_on:
+      - api_db
+
+  api_db:
+    image: mongo:latest
