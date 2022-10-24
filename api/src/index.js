@@ -1,13 +1,30 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const axios = require('axios');
 
 const { connectDb } = require("./db");
-const { port, host, db } = require("./config");
+const { port, host, db, authApiUrl } = require("./config");
 
 const app = express();
 
 app.get("/test", (req, res) => {
   res.send("Api test route");
+});
+
+app.get("/api/testapidata", (req, res) => {
+  res.json({
+    testwithapi: true
+  })
+});
+
+app.get("/testWithCurrentUser", (req, res) => {
+  axios.get(authApiUrl + '/currentUser').then(response => {
+    res.json({
+      testWithCurentUser: true,
+      currentUserFromAuth: response.data
+    })
+  })
+
 });
 
 const postSchema = new mongoose.Schema({ name: String });
