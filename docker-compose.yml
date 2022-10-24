@@ -8,6 +8,8 @@ services:
     ports:
       - "3000:3000"
     restart: unless-stopped
+    networks:
+      - learn-docker-network
 
   api:
     build: ./api
@@ -22,12 +24,16 @@ services:
       - AUTH_API_URL=http://auth:3002/api
     depends_on:
       - api_db
+    networks:
+      - learn-docker-network
 
   api_db:
     image: mongo:latest
     container_name: learn-docker-api_db
     volumes:
       - mongodb_api:/data/db
+    networks:
+      - learn-docker-network
 
   auth:
     build: ./auth
@@ -40,15 +46,18 @@ services:
       - PORT=3002
       - MONGO_URL=mongodb://auth_db:27017/auth
       - API_URL=http://api:3001/api
-
     depends_on:
       - auth_db
+    networks:
+      - learn-docker-network
 
   auth_db:
     image: mongo:latest
     container_name: learn-docker-auth_db
     volumes:
       - mongodb_auth:/data/db
+    networks:
+      - learn-docker-network
 
   nginx:
     image: nginx:stable-alpine
@@ -59,7 +68,13 @@ services:
       - ./nginx/nginx.conf.prod:/etc/nginx/conf.d/nginx.conf
     depends_on:
       - frontend
+    networks:
+      - learn-docker-network
 
 volumes:
   mongodb_api:
   mongodb_auth:
+
+networks:
+  learn-docker-network:
+    driver: bridge
